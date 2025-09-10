@@ -100,7 +100,6 @@ def main():
     for epoch in range(num_epochs):
         model.train()
         for batch_idx, (batch_inputs, batch_labels) in enumerate(train_loader):
-            start_time = time.time()
             batch_inputs = {k: v.to(device) for k, v in batch_inputs.items()}
             optimizer.zero_grad()
             fused_embeddings = model(**batch_inputs)
@@ -114,9 +113,6 @@ def main():
             loss = criterion(similarities, target_indices)
             loss.backward()
             optimizer.step()
-            end_time = time.time()
-            small_epoch_time = end_time - start_time
-            print(f"Epoch [{epoch + 1}/{num_epochs}], Batch [{batch_idx + 1}/{len(train_loader)}], Loss: {loss.item()}, 用时：{small_epoch_time}")
 
         if (epoch + 1) % 5 == 0 or (epoch + 1) == num_epochs:
             epoch_output_dir = os.path.join(output_dir, f'epoch_{epoch + 1}')
